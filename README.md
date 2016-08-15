@@ -13,12 +13,6 @@ Within Julia, use the package manager to install Search:
 
 This package supports Julia v0.4.
 
-## Data Files
-
-Descriptions of the specific options available within the Search analysis package are in its [documentation page](https://openmendel.github.io/Search.jl).
-
-There are example data files in the "docs" subfolder of each Mendel package, for example, ~/.julia/v0.4/Search/docs.
-
 ## Running the Analysis
 
 To run this analysis package, first launch Julia. Then load the package with the command:
