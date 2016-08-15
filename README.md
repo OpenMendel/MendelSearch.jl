@@ -1,7 +1,4 @@
 # Search
-
-[![Build Status](https://travis-ci.org/ericsobel/Search.jl.svg?branch=master)](https://travis-ci.org/ericsobel/Search.jl)
-
 This [Julia](http://julialang.org/) package performs function optimization. Search permits bounds and linear constraints to be imposed on parameters and, in statistical applications, computes asymptotic standard errors and correlations of parameter estimates. It is one component of the umbrella [OpenMendel](https://openmendel.github.io) project.
 
 [![](https://img.shields.io/badge/docs-current-blue.svg)](https://OpenMendel.github.io/Search.jl)
@@ -24,12 +21,24 @@ There are example data files in the "docs" subfolder of each Mendel package, for
 
 ## Running the Analysis
 
-To run this analysis package, first launch Julia. Then load the package with the command:     julia> using Search
+To run this analysis package, first launch Julia. Then load the package with the command:
+
+     julia> using Search
 
 Next, if necessary, change to the directory containing your files, for example,
 
-     julia> cd("~/path/to/data/files/")Finally, To call Search, you should start with the codeinclude("search.jl")
-	using ParameterData	using Optimize	keyword = Dict{ASCIIString, Any}()	keyword = optimization_dictionary(keyword)	outfile = "Search.out"	io = open(outfile, "w")	keyword["output_unit"] = io
+     julia> cd("~/path/to/data/files/")
+
+Finally, To call Search, you should start with the code
+include("search.jl")
+
+	using ParameterData
+	using Optimize
+	keyword = Dict{ASCIIString, Any}()
+	keyword = optimization_dictionary(keyword)
+	outfile = "Search.out"
+	io = open(outfile, "w")
+	keyword["output_unit"] = io
 	
 ## Citation
 
