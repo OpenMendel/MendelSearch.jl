@@ -9,7 +9,7 @@ This [Julia](http://julialang.org/) package performs function optimization. Sear
 
 Within Julia, use the package manager to install Search:
 
-    Pkg.clone("git@github.com:OpenMendel/Search.jl.git")
+    Pkg.clone("https://github.com/OpenMendel/Search.jl.git")
 
 This package supports Julia v0.4.
 
