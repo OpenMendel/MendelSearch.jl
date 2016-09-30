@@ -616,8 +616,8 @@ Checks for constraint violations. The returned value conveys the
 nature of the violation.
 """
 function check_constraints(constraint::Matrix{Float64},
-  level::Vector{Float64}, pname::Vector{ASCIIString}, par::Vector{Float64},
-  pmin::Vector{Float64}, pmax::Vector{Float64}, io::IO, travel::ASCIIString)
+  level::Vector{Float64}, pname::Vector{AbstractString}, par::Vector{Float64},
+  pmin::Vector{Float64}, pmax::Vector{Float64}, io::IO, travel::AbstractString)
 
   tol = 1e-4
   error = false
@@ -721,7 +721,7 @@ end # function check_constraints
 Outputs the current iteration.
 """
 function iteration_output!(io::IO, f::Float64, iteration::Int,
-  par::Vector{Float64}, pname::Vector{ASCIIString}, steps::Int = 0)
+  par::Vector{Float64}, pname::Vector{AbstractString}, steps::Int = 0)
 
   if iteration == 1
     name = join(pname, "    ")
@@ -739,7 +739,7 @@ Computes the asymptotic covariance matrix of the
 parameter estimates.
 """
 function asymptotic_covariances(io::IO, constraint::Matrix{Float64},
-  boundary::BitArray{1}, d2f::Matrix{Float64}, pname::Vector{ASCIIString})
+  boundary::BitArray{1}, d2f::Matrix{Float64}, pname::Vector{AbstractString})
   #
   # Reparameterize to find the asymptotic covariance matrix.
   # Add an extra constraint for each parameter occurring on a boundary.

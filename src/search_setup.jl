@@ -10,27 +10,27 @@ export optimization_keywords!, set_parameter_defaults
 type Parameter
   cases :: Int # number of cases in a least squares problem
   constraints :: Int # number of affine constraints
-  goal :: ASCIIString # "minimize" or "maximize"
+  goal :: AbstractString # "minimize" or "maximize"
   output_unit :: IO # for output of Search iterations
   parameters :: Int # number of parameters
   points :: Int # number of points in a grid search
   standard_errors :: Bool # true for parameter standard errors
-  title :: ASCIIString # problem title
-  travel :: ASCIIString # "grid" or "search"
+  title :: AbstractString # problem title
+  travel :: AbstractString # "grid" or "search"
   constraint :: Matrix{Float64} # parameter.constraint[constraint, par]
   constraint_level :: Vector{Float64}
   function_value :: Vector{Float64}
   grid :: Matrix{Float64} # parameter.grid[point, coordinate]
   min :: Vector{Float64}
   max :: Vector{Float64}
-  name :: Vector{ASCIIString}
+  name :: Vector{AbstractString}
   par :: Vector{Float64}
 end
 
 """
 Defines keywords specific to Search prior to parameter initialization.
 """
-function optimization_keywords!(keyword::Dict{ASCIIString, Any})
+function optimization_keywords!(keyword::Dict{AbstractString, Any})
 
   keyword["cases"] = 0 # number of cases in a least squares problem
   keyword["constraints"] = 0 # number of affine constraints
@@ -47,8 +47,8 @@ end # optimization_keywords!
 """
 Initializes the parameter data structure based on appropriate keywords.
 """
-function set_parameter_defaults(keyword::Dict{ASCIIString, Any})
-  #
+function set_parameter_defaults(keyword::Dict{AbstractString, Any})
+
   cases = keyword["cases"]
   constraints = keyword["constraints"]
   goal = keyword["goal"]
