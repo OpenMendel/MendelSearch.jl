@@ -1,11 +1,13 @@
 Search is a component of the umbrella [OpenMendel](https://openmendel.github.io) project. This package performs function optimization, and permits bounds and linear constraints to be imposed on parameters and, in statistical applications, computes asymptotic standard errors and correlations of parameter estimates. Search is necessary to run any OpenMendel analysis package, and you should install Search first, before you install the analyis packages. View the [Search Documentation](https://github.com/OpenMendel/Search.jl/tree/master/docs/SearchDocumentation.pdf) for in depth information about this package.
 
 ### Installation
-Within Julia, use the package manager to install MendelBase:
+*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [Search](https://openmendel.github.io/Search.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
 
-    Pkg.clone("https://github.com/OpenMendel/MendelBase.jl.git")
+Within Julia, use the package manager to install Search:
 
-This package supports Julia v0.4.
+    Pkg.clone("https://github.com/OpenMendel/Search.jl.git")
+
+This package supports Julia v0.4 and v0.5.
 
 ## Citation
 
