@@ -15,7 +15,7 @@ This package supports Julia v0.4 and v0.5.
 
 ## Running the Analysis
 
-View the [Search Documentation](https://github.com/OpenMendel/Search.jl/tree/master/docs/SearchDocumentation.pdf) for indepth information about this package.
+View the [Search Documentation](https://github.com/OpenMendel/Search.jl/tree/master/docs/SearchDocumentation.pdf) for in depth information about this package.
 	
 ## Citation
 
