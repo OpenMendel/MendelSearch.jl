@@ -5,13 +5,13 @@ This [Julia](http://julialang.org/) package performs function optimization. Sear
 
 ## Installation
 
-*Note: Three OpenMendel packages - [SnpArrays](https://github.com/OpenMendel/SnpArrays.jl), [Search](https://github.com/OpenMendel/Search.jl), and [MendelBase](https://github.com/OpenMendel/MendelBase.jl) must be installed before any Mendel analysis packages will run.*
+*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [Search](https://openmendel.github.io/Search.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
 
 Within Julia, use the package manager to install Search:
 
     Pkg.clone("https://github.com/OpenMendel/Search.jl.git")
 
-This package supports Julia v0.4.
+This package supports Julia v0.4 and v0.5.
 
 ## Running the Analysis
 
@@ -23,7 +23,7 @@ Next, if necessary, change to the directory containing your files, for example,
 
      julia> cd("~/path/to/data/files/")
 
-Finally, To call Search, you should start with the code
+Finally, to call Search, you should start with the code
 include("search.jl")
 
 	using ParameterData
