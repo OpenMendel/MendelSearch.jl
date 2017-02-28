@@ -15,24 +15,7 @@ This package supports Julia v0.4 and v0.5.
 
 ## Running the Analysis
 
-To run this analysis package, first launch Julia. Then load the package with the command:
-
-     julia> using Search
-
-Next, if necessary, change to the directory containing your files, for example,
-
-     julia> cd("~/path/to/data/files/")
-
-Finally, to call Search, you should start with the code
-include("search.jl")
-
-	using ParameterData
-	using Optimize
-	keyword = Dict{ASCIIString, Any}()
-	keyword = optimization_dictionary(keyword)
-	outfile = "Search.out"
-	io = open(outfile, "w")
-	keyword["output_unit"] = io
+View the [Search Documentation](https://github.com/OpenMendel/Search.jl/tree/master/docs/SearchDocumentation.pdf) for indepth information about this package.
 	
 ## Citation
 
