@@ -1,5 +1,11 @@
-using Search
+module PkgTest
+
+using Search, SearchSetup
 using Base.Test
 
 # write your own tests here
-@test 1 == 1
+
+include("search_setup_test.jl")
+include("search_test.jl")
+end # PkgTest module
+
