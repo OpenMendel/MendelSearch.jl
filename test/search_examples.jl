@@ -1,4 +1,4 @@
-  function initial1(keyword::Dict{ASCIIString, Any})
+function initial1(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -30,7 +30,7 @@ function fun1(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial2(keyword::Dict{ASCIIString, Any})
+function initial2(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -62,7 +62,7 @@ function fun2(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial3(keyword::Dict{ASCIIString, Any})
+function initial3(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -95,7 +95,7 @@ function fun3(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial4(keyword::Dict{ASCIIString, Any})
+function initial4(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -130,7 +130,7 @@ function fun4(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial5(keyword::Dict{ASCIIString, Any})
+function initial5(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -164,7 +164,7 @@ function fun5(par::Vector{Float64})
   return (f,df,nothing)
 end
 
-function initial6(keyword::Dict{ASCIIString, Any})
+function initial6(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -205,7 +205,7 @@ function fun6(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial7(keyword::Dict{ASCIIString, Any})
+function initial7(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -243,7 +243,7 @@ function fun7(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial8(keyword::Dict{ASCIIString, Any})
+function initial8(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -290,7 +290,7 @@ function fun8(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial9(keyword::Dict{ASCIIString, Any})
+function initial9(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -335,7 +335,7 @@ function fun9(par::Vector{Float64})
  return (f, df, nothing)
 end
 
-function initial10(keyword::Dict{ASCIIString, Any})
+function initial10(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -376,7 +376,7 @@ function fun10(par::Vector{Float64})
   return (f, df, nothing)
 end
 
-function initial11(keyword::Dict{ASCIIString, Any})
+function initial11(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -440,7 +440,7 @@ function fun11(par::Vector{Float64})
   return(f, df, d2f)
 end
 
-function initial12(keyword::Dict{ASCIIString, Any})
+function initial12(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -512,7 +512,7 @@ function fun12(par::Vector{Float64})
 #   return(f, df, nothing)
 end
 
-function initial13(keyword::Dict{ASCIIString, Any})
+function initial13(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -576,7 +576,7 @@ function fun13(par::Vector{Float64})
   return(f, df, d2f)
 end
 
-function initial14(keyword::Dict{ASCIIString, Any})
+function initial14(keyword::Dict{AbstractString, Any})
 #
 # This function initializes a minimization problem.
 #
@@ -687,12 +687,12 @@ end
 #
 # Run the various test problems.
 # Launch Julia, then run this file:
-# include("search_example.jl")
+# include("search_examples.jl")
 #
 using Search
 using SearchSetup
-keyword = Dict{ASCIIString, Any}()
-keyword = optimization_dictionary(keyword)
+keyword = Dict{AbstractString, Any}()
+keyword = optimization_keywords!(keyword)
 outfile = "Search.out"
 io = open(outfile, "w")
 keyword["output_unit"] = io
