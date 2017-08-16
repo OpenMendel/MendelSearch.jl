@@ -1,4 +1,4 @@
-using Search, SearchSetup, SpecialFunctions
+using Search, SearchSetup, SpecialFunctions, Distributions
 
 info("Unit tests for Search, problems from test problems 
     for nonlinear programming with optimal solutions. The 
@@ -388,7 +388,7 @@ end
 
 function initial11(keyword::Dict{AbstractString, Any})
 #
-# Same function as fun1, except we set travel=grid. 
+# Same function as fun1 (minimize Rosenbrock), except we set travel=grid. 
 # Want to test if grid is working
 #
   keyword["goal"] = "minimize"
@@ -401,7 +401,7 @@ function initial11(keyword::Dict{AbstractString, Any})
   parameter.par[2] = 1.0
   parameter.min[2] = -3.0/2.0
 # 
-#   uniformly distributed random grid of n points over the square [0, 1]^2
+#   uniformly distributed random grid of n points over [0, 1]
 #
   n = parameter.points
   p = parameter.parameters
@@ -438,11 +438,16 @@ function initial12(keyword::Dict{AbstractString, Any})
   parameter.par[2] = 1.0
   parameter.min[2] = 0.0
 # 
-#   uniformly distributed random grid of n points over the square [0, 1]^2
+#   uniformly distributed random grid of n points over [0, 10]
 #
   n = parameter.points
   p = parameter.parameters
-  parameter.grid = rand(n, p)
+  v1 = rand(Uniform(-5, 5), n)
+  v2 = rand(Uniform(0, 1), n)
+  x = zeros(n, p)
+  x[:, 1] = v1
+  x[:, 2] = v2
+  parameter.grid = x
   return parameter
 end
 
@@ -454,11 +459,10 @@ function fun12(par::Vector{Float64})
   pars = length(par)
   df = zeros(pars) 
   f = par[2]+(1e-5)*(par[2]-par[1])^2
-  # df[1] = -(2e-5)*(par[2]-par[1])
-  # df[2] = 1.+(2e-5)*(par[2]-par[1])
+  df[1] = -(2e-5)*(par[2]-par[1])
+  df[2] = 1.+(2e-5)*(par[2]-par[1])
   return (f, df, nothing)
 end
-
 
 function initial13(keyword::Dict{AbstractString, Any})
 #
@@ -467,7 +471,7 @@ function initial13(keyword::Dict{AbstractString, Any})
   keyword["goal"] = "minimize"
   keyword["parameters"] = 2
   keyword["standard_errors"] = true
-  keyword["title"] = "test problem 1, not providing derivatives"
+  keyword["title"] = "calculate std error of problem 1, not providing grad"
   parameter = set_parameter_defaults(keyword)
   parameter.par[1] = -2.0
   parameter.par[2] = 1.0
@@ -482,15 +486,14 @@ function fun13(par::Vector{Float64})
   pars = length(par)
   df = zeros(pars) 
   f = 100(par[2]-par[1]^2)^2+(1.-par[1])^2
-  df[1] = -400(par[2]-par[1]^2)*par[1]-2(1.-par[1])
-  df[2] = 200(par[2]-par[1]^2)
+  # df[1] = -400(par[2]-par[1]^2)*par[1]-2(1.-par[1])
+  # df[2] = 200(par[2]-par[1]^2)
   return (f, nothing, nothing)
 end
 
 function initial14(keyword::Dict{AbstractString, Any})
 #
-# Test problem 2 again, now requesting standard error.
-# provide grad but not hessian.
+# calculate standard error of problem 2, provide grad but not hessian.
 # 
   keyword["goal"] = "minimize"
   keyword["parameters"] = 2
@@ -508,8 +511,7 @@ end
 
 function fun14(par::Vector{Float64})
 #
-# Test problem 2 again, now requesting standard error.
-# provide grad but not hessian.
+# calculate standard error of problem 2, provide grad but not hessian.
 # 
   pars = length(par)
   df = zeros(pars) 
@@ -518,8 +520,6 @@ function fun14(par::Vector{Float64})
   df[2] = 1.+(2e-5)*(par[2]-par[1])
   return (f, df, nothing)
 end
-
-
 
 @testset "Problem 1 test" begin
     #problem 1 in test problems for nonlinear programming with optimal solutions
@@ -668,7 +668,3 @@ end
     @test round(best_value, 20) == 0.0 #global min = 0
     @test best_point ≈ [0.0, 0.0] #global min at x = (0, 0)
 end
-
-#need travel = grid
-#need hess_provided = true
-#need to recompute the first differential using central differences
