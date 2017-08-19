@@ -1,10 +1,10 @@
-using Search, SearchSetup, SpecialFunctions, Distributions
+using Search, SearchSetup, SpecialFunctions
 
-info("Unit tests for Search, problems from test problems 
-    for nonlinear programming with optimal solutions. The 
-    first 10 tests are the same as search examples. Test 11 and
-    12 are tests using grid. Tests 13 and 14 are tests that requires
-    search to estimate function derivatives.")
+info("Unit tests for Search.jl. Problems taken from 'Test problems 
+    for nonlinear programming with optimal solutions'. The 
+    first 10 tests are the same as search examples as in the documentation. 
+    Testset 11 is using grid search. Testset 12 are tests that requires 
+    openmendel to estimate function derivatives.")
 
 srand(123)
 
@@ -401,11 +401,24 @@ function initial11(keyword::Dict{AbstractString, Any})
   parameter.par[2] = 1.0
   parameter.min[2] = -3.0/2.0
 # 
-#   uniformly distributed random grid of n points over [0, 1]
+#   first parameter are uniform random points within (-2, 2)
+#   second parameter are within (-1.5, 1.5)
 #
   n = parameter.points
   p = parameter.parameters
-  parameter.grid = rand(n, p)
+  x = zeros(n, p)
+  v1 = collect(-2:4.0/(100-1):2)
+  v2 = collect(-1.5:3.0/(100-1):1.5)
+  counter = 0 
+  for i in 1:100
+    for j in 1:100
+      row = counter * 100 + j
+      x[row, 1] = v1[i]
+      x[row, 2] = v2[j]
+    end
+    counter += 1
+  end
+  parameter.grid = x
   return parameter
 end
 
@@ -424,48 +437,6 @@ end
 
 function initial12(keyword::Dict{AbstractString, Any})
 #
-# Same function as fun2, except we set travel=grid. 
-# Want to test if grid is working
-#
-  keyword["goal"] = "minimize"
-  keyword["parameters"] = 2
-  keyword["title"] = "test problem 2 using grid"
-  keyword["travel"] = "grid"
-  keyword["points"] = 10000
-  parameter = set_parameter_defaults(keyword)
-
-  parameter.par[1] = 10.0
-  parameter.par[2] = 1.0
-  parameter.min[2] = 0.0
-# 
-#   uniformly distributed random grid of n points over [0, 10]
-#
-  n = parameter.points
-  p = parameter.parameters
-  v1 = rand(Uniform(-5, 5), n)
-  v2 = rand(Uniform(0, 1), n)
-  x = zeros(n, p)
-  x[:, 1] = v1
-  x[:, 2] = v2
-  parameter.grid = x
-  return parameter
-end
-
-function fun12(par::Vector{Float64})
-#
-# Same function as fun2, except we set travel=grid. 
-# Want to test if grid is working
-#
-  pars = length(par)
-  df = zeros(pars) 
-  f = par[2]+(1e-5)*(par[2]-par[1])^2
-  df[1] = -(2e-5)*(par[2]-par[1])
-  df[2] = 1.+(2e-5)*(par[2]-par[1])
-  return (f, df, nothing)
-end
-
-function initial13(keyword::Dict{AbstractString, Any})
-#
 # calculate standard error of problem 1, not providing grad nor hessian.
 #
   keyword["goal"] = "minimize"
@@ -479,7 +450,7 @@ function initial13(keyword::Dict{AbstractString, Any})
   return parameter
 end
 
-function fun13(par::Vector{Float64})
+function fun12(par::Vector{Float64})
 #
 # calculate standard error of problem 1, not providing grad nor hessian.
 #
@@ -489,36 +460,6 @@ function fun13(par::Vector{Float64})
   # df[1] = -400(par[2]-par[1]^2)*par[1]-2(1.-par[1])
   # df[2] = 200(par[2]-par[1]^2)
   return (f, nothing, nothing)
-end
-
-function initial14(keyword::Dict{AbstractString, Any})
-#
-# calculate standard error of problem 2, provide grad but not hessian.
-# 
-  keyword["goal"] = "minimize"
-  keyword["parameters"] = 2
-  keyword["title"] = "test problem 2, request standard_errors"
-  keyword["standard_errors"] = true
-  parameter = set_parameter_defaults(keyword)
-#
-#  Change these defaults as needed.
-#
-  parameter.par[1] = 10.0
-  parameter.par[2] = 1.0
-  parameter.min[2] = 0.0
-  return parameter
-end
-
-function fun14(par::Vector{Float64})
-#
-# calculate standard error of problem 2, provide grad but not hessian.
-# 
-  pars = length(par)
-  df = zeros(pars) 
-  f = par[2]+(1e-5)*(par[2]-par[1])^2
-  df[1] = -(2e-5)*(par[2]-par[1])
-  df[2] = 1.+(2e-5)*(par[2]-par[1])
-  return (f, df, nothing)
 end
 
 @testset "Problem 1 test" begin
@@ -634,37 +575,18 @@ end
     keyword = optimization_keywords!(keyword)
     parameter = initial11(keyword)
     (best_point, best_value) = optimize(fun11, parameter)
-    # @test round(best_value, 20) == 0.0 #Rosenbrock function converges to 0, round result to 20 significant digits
-    # @test best_point ≈ [1.0, 1.0] #global min is achieved at (a, a^2), and we picked a = 1
+    @test best_value - 0.0 < 0.05 #Rosenbrock function converges to 0, round result to 20 significant digits
+    @test best_point[1] - 1.0 < 0.5 #global min is achieved at (a, a^2), and we picked a = 1
+    @test best_point[2] - 1.0 < 0.5 
 end
 
 @testset "Problem 12 test" begin
-    # This is the same as problem 2, except we use travel = grid instead of search.
-    # For some reason the global min is found but the best_point is incorrect.
-    keyword = Dict{AbstractString, Any}()
-    keyword = optimization_keywords!(keyword)
-    parameter = initial12(keyword)
-    (best_point, best_qvalue) = optimize(fun12, parameter)
-    # @test round(best_value, 4) == 0.0 
-    # @test best_point ≈ [0.0, 0.0] #global min at x = (0, 0)
-end
-
-@testset "Problem 13 test" begin
     #calculate standard error of problem 1, not providing grad or hessian
     keyword = Dict{AbstractString, Any}()
     keyword = optimization_keywords!(keyword)
-    parameter = initial13(keyword)
-    (best_point, best_value) = optimize(fun13, parameter)
+    parameter = initial12(keyword)
+    (best_point, best_value) = optimize(fun12, parameter)
     @test round(best_value, 15) == 0.0 # Instead of having >20 significant digit accuracy, now only has 18
     @test best_point ≈ [1.0, 1.0] #global min is achieved at (a, a^2), and we picked a = 1
-end
-
-@testset "Problem 14 test" begin
-    #problem 2 test again, requesting standard error
-    keyword = Dict{AbstractString, Any}()
-    keyword = optimization_keywords!(keyword)
-    parameter = initial14(keyword)
-    (best_point, best_value) = optimize(fun14, parameter)
-    @test round(best_value, 20) == 0.0 #global min = 0
-    @test best_point ≈ [0.0, 0.0] #global min at x = (0, 0)
+    #@test standard error is what....?
 end
