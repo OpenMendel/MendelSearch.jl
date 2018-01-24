@@ -11,7 +11,7 @@ Within Julia, use the package manager to install Search:
 
     Pkg.clone("https://github.com/OpenMendel/Search.jl.git")
 
-This package supports Julia v0.4 and v0.5.
+This package supports Julia v0.5 and v0.6.
 
 ## Running the Analysis
 
