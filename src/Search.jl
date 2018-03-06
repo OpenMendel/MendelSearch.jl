@@ -89,20 +89,20 @@ function optimize(fun::Function, parameter::Parameter)
     #
     # Check user defined grid values are within parameter constraints
     #
-    for i in 1:parameter.points 
-      for j in 1:parameter.parameters # number of parameters
-        grid_point = parameter.grid[i, j]
-        if grid_point < parameter.min[j]
-          throw(ArgumentError(
-            "Attempted to evaluate parameter $j at point $grid_point ,
-            which is above specified maximum.\n \n"))
-        elseif grid_point > parameter.max[j]
-          throw(ArgumentError(
-            "Attempted to evaluate parameter $j at point $grid_point ,
-            which is below specified minimum.\n \n"))
-        end
-      end
-    end
+    # for i in 1:parameter.points 
+    #   for j in 1:parameter.parameters # number of parameters
+    #     grid_point = parameter.grid[i, j]
+    #     if grid_point < parameter.min[j]
+    #       throw(ArgumentError(
+    #         "Attempted to evaluate parameter $j at point $grid_point ,
+    #         which is above specified maximum.\n \n"))
+    #     elseif grid_point > parameter.max[j]
+    #       throw(ArgumentError(
+    #         "Attempted to evaluate parameter $j at point $grid_point ,
+    #         which is below specified minimum.\n \n"))
+    #     end
+    #   end
+    # end
 
     for iteration = 1:points
       parameter.par = vec(parameter.grid[iteration, :])

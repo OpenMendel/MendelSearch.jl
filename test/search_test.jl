@@ -401,7 +401,7 @@ function initial11(keyword::Dict{AbstractString, Any})
   parameter.par[2] = 1.0
   parameter.min[2] = -3.0/2.0
 # 
-#   first parameter are uniform random points within (-2, 2)
+#   Create a grid. first parameter are uniform random points within (-2, 2)
 #   second parameter are within (-1.5, 1.5)
 #
   n = parameter.points
@@ -460,6 +460,73 @@ function fun12(par::Vector{Float64})
   # df[1] = -400(par[2]-par[1]^2)*par[1]-2(1.-par[1])
   # df[2] = 200(par[2]-par[1]^2)
   return (f, nothing, nothing)
+end
+
+function initial13(keyword::Dict{AbstractString, Any})
+#
+# Same as problem 9, used to test if all grid constraints are being checked properly. 
+# Currently it is not.  
+#
+  keyword["goal"] = "minimize"
+  keyword["constraints"] = 2
+  keyword["parameters"] = 4
+  keyword["title"] = "test problem 9"
+  keyword["travel"] = "grid"
+  keyword["points"] = 10000
+  parameter = set_parameter_defaults(keyword)
+#
+#  Change these defaults as needed.
+#
+  parameter.par[1] = 1.
+  parameter.par[2] = .5
+  parameter.par[3] = parameter.par[1]/3.0^(0.5) - parameter.par[2]
+  parameter.par[4] = parameter.par[1] + 3.0^(0.5) * parameter.par[2]
+  parameter.max[4] = 6.
+  parameter.min[1] = 0.
+  parameter.min[2] = 0.
+  parameter.min[3] = 0.
+  parameter.min[4] = 0.
+  parameter.constraint[1,1] = 1./3.0^(0.5)
+  parameter.constraint[1,2] = -1.
+  parameter.constraint[1,3] = -1.
+  parameter.constraint[2,1] = 1.
+  parameter.constraint[2,2] = 3.0^(0.5)
+  parameter.constraint[2,4] = -1.
+
+# 
+#   Create a grid. first parameter are uniform random points within (-2, 2)
+#   second parameter are within (-1.5, 1.5)
+#
+  n = parameter.points
+  p = parameter.parameters
+  x = zeros(n, p)
+  v1 = collect(0:4.0/(100-1):4)
+  v2 = collect(0:3.0/(100-1):3)
+  counter = 0 
+  for i in 1:100
+    for j in 1:100
+      row = counter * 100 + j
+      x[row, 1] = v1[i]
+      x[row, 2] = v2[j]
+    end
+    counter += 1
+  end
+  parameter.grid = x
+
+  return parameter
+end
+
+function fun13(par::Vector{Float64})
+#
+# Define a function to be minimized. Include as needed
+# the first and second differentials.
+#
+  pars = length(par)
+  df = zeros(pars) 
+  f = ((par[1]-3.)^2-9.)*par[2]^3
+  df[1] = 2.*(par[1]-3.)*par[2]^3
+  df[2] = 3.*((par[1]-3.)^2-9.)*par[2]^2
+ return (f, df, nothing)
 end
 
 @testset "Problem 1 test" begin
@@ -556,7 +623,7 @@ end
 end
 
 @testset "Problem 10 test" begin
-    #problem 24 in test problems for nonlinear programming with optimal solutions
+    #problem 38 in test problems for nonlinear programming with optimal solutions
     keyword = Dict{AbstractString, Any}()
     keyword = optimization_keywords!(keyword)
     parameter = initial10(keyword)
@@ -570,7 +637,6 @@ end
 
 @testset "Problem 11 test" begin
     #same as problem 1, except we use travel = grid instead of search.
-    # For some reason the global min is found but the best_point is incorrect.
     keyword = Dict{AbstractString, Any}()
     keyword = optimization_keywords!(keyword)
     parameter = initial11(keyword)
@@ -588,5 +654,18 @@ end
     (best_point, best_value) = optimize(fun12, parameter)
     @test round(best_value, 15) == 0.0 # Instead of having >20 significant digit accuracy, now only has 18
     @test best_point ≈ [1.0, 1.0] #global min is achieved at (a, a^2), and we picked a = 1
-    #@test standard error is what....?
+    #need some known standard error
 end
+
+# @testset "Problem 13 test" begin
+#     # test if travel=grid are checking all possible constraints. Currently it isn't.
+#     keyword = Dict{AbstractString, Any}()
+#     keyword = optimization_keywords!(keyword)
+#     parameter = initial13(keyword)
+#     (best_point, best_value) = optimize(fun13, parameter)
+#     @test round(best_value, 15) == 0.0 # Instead of having >20 significant digit accuracy, now only has 18
+#     @test best_point ≈ [1.0, 1.0] #global min is achieved at (a, a^2), and we picked a = 1
+#     #need some known standard error
+# end
+
+#current coverage = (364, 409) = 89%
