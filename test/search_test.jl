@@ -494,14 +494,15 @@ function initial13(keyword::Dict{AbstractString, Any})
   parameter.constraint[2,4] = -1.
 
 # 
-#   Create a grid. first parameter are uniform random points within (-2, 2)
-#   second parameter are within (-1.5, 1.5)
+#   Create a grid. first parameter are uniform random points within (-2, 2), and 
+#   second parameter are within (-1.5, 1.5).
+#   This violates the constrait that both parameters must be positive (problem 24 in booklet)
 #
   n = parameter.points
   p = parameter.parameters
   x = zeros(n, p)
-  v1 = collect(0:4.0/(100-1):4)
-  v2 = collect(0:3.0/(100-1):3)
+  v1 = collect(-2:2.0/(100-1):4)
+  v2 = collect(-1.5:1.5/(100-1):3)
   counter = 0 
   for i in 1:100
     for j in 1:100
@@ -657,15 +658,17 @@ end
     #need some known standard error
 end
 
-# @testset "Problem 13 test" begin
-#     # test if travel=grid are checking all possible constraints. Currently it isn't.
-#     keyword = Dict{AbstractString, Any}()
-#     keyword = optimization_keywords!(keyword)
-#     parameter = initial13(keyword)
-#     (best_point, best_value) = optimize(fun13, parameter)
-#     @test round(best_value, 15) == 0.0 # Instead of having >20 significant digit accuracy, now only has 18
-#     @test best_point ≈ [1.0, 1.0] #global min is achieved at (a, a^2), and we picked a = 1
-#     #need some known standard error
-# end
+@testset "Problem 13 test" begin
+    # test if travel=grid are checking all possible constraints. Currently it isn't.
+    keyword = Dict{AbstractString, Any}()
+    keyword = optimization_keywords!(keyword)
+    parameter = initial13(keyword)
+    (best_point, best_value) = optimize(fun13, parameter)
+
+    #currently the tests below will fail because search does not check if the 
+    #grid points are properly checked. They should be throwing errors.
+    @test round(best_value / 27.0 / sqrt(3), 10) == -1.0 
+    @test best_point[1:2] ≈ [3, sqrt(3)]
+end
 
 #current coverage = (364, 409) = 89%
