@@ -51,13 +51,13 @@ function set_parameter_defaults(keyword::Dict{AbstractString, Any})
 
   cases = keyword["cases"]
   constraints = keyword["constraints"]
-  goal = keyword["goal"]
+  goal = lowercase(keyword["goal"]) 
   output_unit = keyword["output_unit"]
   pars = keyword["parameters"]
   points = keyword["points"]
   standard_errors = keyword["standard_errors"]
   title = keyword["title"]
-  travel = keyword["travel"]
+  travel = lowercase(keyword["travel"])
   #
   # Check that input variables are properly defined.
   #
