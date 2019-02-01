@@ -1,13 +1,13 @@
-Search is a component of the umbrella [OpenMendel](https://openmendel.github.io) project. This package performs function optimization, and permits bounds and linear constraints to be imposed on parameters and, in statistical applications, computes asymptotic standard errors and correlations of parameter estimates. Search is necessary to run any OpenMendel analysis package, and you should install Search first, before you install the analysis packages. View the [Search Documentation](https://github.com/OpenMendel/Search.jl/tree/master/docs/SearchDocumentation.pdf) for in depth information about this package.
+MendelSearch is a component of the umbrella [OpenMendel](https://openmendel.github.io) project. This package performs function optimization, and permits bounds and linear constraints to be imposed on parameters and, in statistical applications, computes asymptotic standard errors and correlations of parameter estimates. MendelSearch is necessary to run any OpenMendel analysis package, and you should install MendelSearch first, before you install the analysis packages. View the [MendelSearch Documentation](https://github.com/OpenMendel/MendelSearch.jl/tree/master/docs/SearchDocumentation.pdf) for in depth information about this package.
 
 ### Installation
-*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [Search](https://openmendel.github.io/Search.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
+*Note: The three OpenMendel packages (1) [SnpArrays](https://openmendel.github.io/SnpArrays.jl/latest/), (2) [MendelSearch](https://openmendel.github.io/MendelSearch.jl), and (3) [MendelBase](https://openmendel.github.io/MendelBase.jl) must be installed before any other OpenMendel package will run. It is easiest if these three packages are installed in the above order and before any other OpenMendel package.*
 
-Within Julia, use the package manager to install Search:
+Within Julia, use the package manager to install MendelSearch:
 
-    Pkg.clone("https://github.com/OpenMendel/Search.jl.git")
+    pkg> add https://github.com/OpenMendel/MendelSearch.jl.git
 
-This package supports Julia v0.4 and v0.5.
+This package supports Julia v1.0+
 
 ## Citation
 
