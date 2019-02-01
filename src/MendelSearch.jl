@@ -1,17 +1,20 @@
-#
-# Include functions to setup the search structures,
-# including the Parameter data structure whose entries control optimization.
-#
-include("search_setup.jl")
+__precompile__()
 
 """
 The Search optimization algorithm.
 """
-module Search
+module MendelSearch
+#
+# Required OpenMendel packages and modules.
+#
+using SearchSetup   # From package MendelSearch.
+#
+# Required external modules.
+#
+using LinearAlgebra
+using Printf
 
-using SearchSetup
- 
-export optimize
+export mendel_search
 
 """
 Computes the values of a function f over a user defined grid of 
@@ -21,7 +24,7 @@ secant update unless an exact value is supplied by the user. Users must
 supply the objective function fun. Parameter initial values and 
 constraints are passed through the parameter data structure.
 """
-function optimize(fun::Function, parameter::Parameter)
+function mendel_search(fun::Function, parameter::Parameter)
   #
   # Set variables controlling convergence and numerical differentiation.
   #
@@ -97,19 +100,19 @@ function optimize(fun::Function, parameter::Parameter)
       if f < fmin
         fmin = f
         iter_min = iteration
-        copy!(best_point, par)
+        copyto!(best_point, par)
       end
     end
     #
     # Return the optimal point and optimal function value.
     #
     if goal == "minimize"
-      println(io, " \nThe minimum function value of ", round(fmin, 5),
-        " occurs at iteration ", iter_min, ".")
+      println(io, " \nThe minimum function value of ", 
+        round(fmin; digits = 5)," occurs at iteration ",iter_min, ".")
       return (best_point, fmin)
     else
-      println(io, " \nThe maximum function value of ", round(- fmin, 5),
-        " occurs at iteration ", iter_min, ".")
+      println(io, " \nThe maximum function value of ", 
+        round(-fmin; digits = 5)," occurs at iteration ",iter_min, ".")
       return (best_point, - fmin)
     end
     #
@@ -119,8 +122,8 @@ function optimize(fun::Function, parameter::Parameter)
     #
   else
     df = zeros(pars)
-    d2f = eye(pars, pars)
-    (matrix_u, d, matrix_v) = svd(constraint, thin = false)
+    d2f = Matrix{Float64}(I, pars, pars)
+    (matrix_u, d, matrix_v) = svd(constraint, full = true)
     ker = matrix_v[:, constraints + 1:pars]
     conv_count = 0
     forward = true
@@ -135,19 +138,19 @@ function optimize(fun::Function, parameter::Parameter)
     #
     # Copy the user supplied first and second differentials.
     #
-    hess_provided =  typeof(hess) != Void
+    hess_provided =  typeof(hess) != Nothing
     if goal == "minimize"
-      copy!(df, grad)
-      if hess_provided; copy!(d2f, hess); end
+      copyto!(df, grad)
+      if hess_provided; copyto!(d2f, hess); end
     else
       f = - f
-      copy!(df, - grad)
-      if hess_provided; copy!(d2f, - hess); end    
+      copyto!(df, - grad)
+      if hess_provided; copyto!(d2f, - hess); end    
     end    
     #
     # Preserve the current point.
     #
-    copy!(best_point, par)
+    copyto!(best_point, par)
     fmin = f
     iter_min = 1
     #
@@ -177,7 +180,7 @@ function optimize(fun::Function, parameter::Parameter)
           # In an emergency revert to steepest descent.
           #
           if c >= Inf
-            d2f = eye(pars, pars)
+            d2f = Matrix{Float64}(I, pars, pars)
           #
           # Otherwise, bump up the diagonal entries of the hessian.
           #
@@ -200,8 +203,8 @@ function optimize(fun::Function, parameter::Parameter)
         delta = max_step_length * delta / l2_norm
       end
       d = min(dot(df, delta), 0.0)
-      copy!(df_old, df)
-      copy!(par_old, par)
+      copyto!(df_old, df)
+      copyto!(par_old, par)
       f_old = f
       t = 1.0
       steps = -1
@@ -215,12 +218,12 @@ function optimize(fun::Function, parameter::Parameter)
         parameter.par = par
         (f, grad_provided, grad, hess) = dfun(fun, parameter, dp, forward)
         if goal == "minimize"
-          copy!(df, grad)
-          if hess_provided; copy!(d2f, hess); end
+          copyto!(df, grad)
+          if hess_provided; copyto!(d2f, hess); end
         else
           f = - f
-          copy!(df, - grad)
-          if hess_provided; copy!(d2f, - hess); end    
+          copyto!(df, - grad)
+          if hess_provided; copyto!(d2f, - hess); end    
         end
         #
         # Test for a sufficient decrease in the objective.
@@ -242,7 +245,7 @@ function optimize(fun::Function, parameter::Parameter)
       if f < fmin
         fmin = f
         iter_min = iteration      
-        copy!(best_point, par)
+        copyto!(best_point, par)
       end
       #
       # Check the convergence criterion. If it has been satisfied a
@@ -285,12 +288,12 @@ function optimize(fun::Function, parameter::Parameter)
   # Output the optimal function value.
   #
   if goal == "minimize"
-    println(io, " \nThe minimum function value of ", round(fmin, 5),
-      " occurs at iteration ", iter_min, ".")
+    println(io, " \nThe minimum function value of ", 
+      round(fmin; digits = 5)," occurs at iteration ", iter_min, ".")
     function_value[2] = fmin
   else
-    println(io, " \nThe maximum function value of ", round(- fmin, 5),
-      " occurs at iteration ", iter_min, ".")
+    println(io, " \nThe maximum function value of ", 
+      round(- fmin; digits = 5)," occurs at iteration ", iter_min, ".")
     function_value[2] = - fmin
   end
   #
@@ -403,7 +406,7 @@ function optimize(fun::Function, parameter::Parameter)
   else
     return (best_point, - fmin)
   end
-end # function optimize
+end # function mendel_search
 
 """
 Calculates the tableau used in minimizing the quadratic 
@@ -425,7 +428,7 @@ function create_tableau(matrix_q::Matrix{Float64}, r::Vector{Float64},
   # the Gerschgorin circle theorem so that Q + mu * A' * A
   # is positive definite.
   #
-    (matrix_u, d, matrix_v) = svd(matrix_a, thin = false)
+    (matrix_u, d, matrix_v) = svd(matrix_a, full = true)
     matrix_p = matrix_v * matrix_q * matrix_v'
     mu = 0.0
     for i = 1:m
@@ -457,7 +460,7 @@ North Carolina State University.
 function quadratic_program(tableau::Matrix{Float64}, par::Vector{Float64},
   pmin::Vector{Float64}, pmax::Vector{Float64}, p::Int, c::Int)
 
-  delta = zeros(par)
+  delta = zeros(Float64, size(par))
   #
   # See function create_tableau for the construction of the tableau.
   # For checking tolerance, set diag to the diagonal elements of tableau.
@@ -562,8 +565,8 @@ function sweep!(matrix_a::Matrix{Float64}, k::Int, inverse::Bool = false)
 
   p = 1.0 / matrix_a[k, k]
   v = matrix_a[:, k]
-  matrix_a[:, k] = 0.0
-  matrix_a[k, :] = 0.0
+  matrix_a[:, k] .= 0.0
+  matrix_a[k, :] .= 0.0
   if inverse
     v[k] = 1.0
   else
@@ -587,7 +590,7 @@ function dfun(fun::Function, parameter::Parameter, dp::Float64, forward::Bool)
   par = parameter.par
   pmax = parameter.max
   (f, df, d2f) = fun(par)
-  grad_provided = typeof(df) != Void
+  grad_provided = typeof(df) != Nothing
   if !grad_provided
     df = zeros(length(par))
     for i = 1:length(par)
@@ -652,7 +655,7 @@ function check_constraints(constraint::Matrix{Float64},
           " \nError: Linear equality constraint ", i, " is not satisfied.")
         error = true
       end
-      if countnz(constraint[i, :]) != 1
+      if count(!iszero, constraint[i, :]) != 1
         continue
       else
         for j = 1:pars
@@ -754,7 +757,7 @@ function asymptotic_covariances(io::IO, constraint::Matrix{Float64},
       j = j + 1
     end
   end
-  (matrix_u, d, matrix_v) = svd(asy_cov, thin = false)
+  (matrix_u, d, matrix_v) = svd(asy_cov, full = true)
   ker = matrix_v[:, j:pars]
   matrix = ker' * d2f * ker
   asy_cov = ker * inv(matrix) * ker'
@@ -805,6 +808,12 @@ function asymptotic_covariances(io::IO, constraint::Matrix{Float64},
     println(io, "")
   end
 end # function asymptotic_covariances
+#
+# Method to obtain path to this package's data files
+# so they can be used in the documentation and testing routines.
+# For example, datadir("Control file.txt") will return
+# "/path/to/package/data/Control file.txt"
+#
+datadir(parts...) = joinpath(@__DIR__, "..", "data", parts...)
 
-end # module Search
-
+end # module MendelSearch

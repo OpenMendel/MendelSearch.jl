@@ -689,7 +689,7 @@ end
 # Launch Julia, then run this file:
 # include("search_example.jl")
 #
-using Search
+using MendelSearch
 using SearchSetup
 keyword = Dict{ASCIIString, Any}()
 keyword = optimization_dictionary(keyword)

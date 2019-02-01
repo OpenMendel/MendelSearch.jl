@@ -1,4 +1,4 @@
-using Search
+using MendelSearch
 using Base.Test
 
 # write your own tests here

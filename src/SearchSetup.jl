@@ -1,5 +1,7 @@
+__precompile__()
+
 """
-Setup the structures needed for the Search routines,
+Setup the structures needed for the MendelSearch routines,
 including the Parameter data structure whose entries control optimization.
 """
 module SearchSetup
@@ -7,7 +9,7 @@ module SearchSetup
 export Parameter
 export optimization_keywords!, set_parameter_defaults
 
-type Parameter
+mutable struct Parameter
   cases :: Int # number of cases in a least squares problem
   constraints :: Int # number of affine constraints
   goal :: AbstractString # "minimize" or "maximize"
@@ -35,7 +37,7 @@ function optimization_keywords!(keyword::Dict{AbstractString, Any})
   keyword["cases"] = 0 # number of cases in a least squares problem
   keyword["constraints"] = 0 # number of affine constraints
   keyword["goal"] = "maximize" # "minimize" or "maximize"
-  keyword["output_unit"] = STDOUT # for output of Search iterations
+  keyword["output_unit"] = stdout # for output of Search iterations
   keyword["parameters"] = 1 # number of parameters
   keyword["points"] = 0 # number of points in a grid search
   keyword["standard_errors"] = false # true for parameter standard errors
@@ -95,9 +97,9 @@ function set_parameter_defaults(keyword::Dict{AbstractString, Any})
   grid = zeros(points, pars)
   par = zeros(pars)
   pmin = zeros(pars)
-  pmin[1:pars] = -Inf
+  pmin[1:pars] .= -Inf
   pmax = zeros(pars)
-  pmax[1:pars] = Inf
+  pmax[1:pars] .= Inf
   constraint = zeros(constraints, pars)
   constraint_level = zeros(constraints)
   level = zeros(constraints)
