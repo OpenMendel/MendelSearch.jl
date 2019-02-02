@@ -5,16 +5,17 @@ The Search optimization algorithm.
 """
 module MendelSearch
 #
-# Required OpenMendel packages and modules.
-#
-using SearchSetup   # From package MendelSearch.
-#
 # Required external modules.
 #
 using LinearAlgebra
 using Printf
 
 export mendel_search
+#
+# SearchSetup sets up the structures needed for the MendelSearch routines,
+# including the Parameter data structure whose entries control optimization.
+#
+include("SearchSetup.jl")
 
 """
 Computes the values of a function f over a user defined grid of 
@@ -43,7 +44,7 @@ function mendel_search(fun::Function, parameter::Parameter)
   travel = parameter.travel
   goal = parameter.goal
   println(io, " \n                Search, Julia Version\n")
-  println(io, "            (c) Copyright Kenneth Lange, 2016\n")
+  println(io, "            (c) Copyright Kenneth Lange, 2019\n")
   if parameter.title != ""
     println(io, "Title: " * parameter.title)
   end

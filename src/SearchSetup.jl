@@ -1,11 +1,7 @@
-__precompile__()
-
-"""
-Setup the structures needed for the MendelSearch routines,
-including the Parameter data structure whose entries control optimization.
-"""
-module SearchSetup
-
+#
+# These functions set up the structures needed for the MendelSearch routines,
+# including the Parameter data structure whose entries control optimization.
+#
 export Parameter
 export optimization_keywords!, set_parameter_defaults
 
@@ -116,6 +112,4 @@ function set_parameter_defaults(keyword::Dict{AbstractString, Any})
   #
   return parameter
 end # function set_parameter_defaults
-
-end # module SearchSetup
 
