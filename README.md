@@ -9,7 +9,7 @@ This [Julia](http://julialang.org/) package performs function optimization. Mend
 
 Within Julia, use the package manager to install MendelSearch:
 
-    pkg> add https://github.com/OpenMendel/MendelSearch.jl.git
+    pkg> add https://github.com/OpenMendel/MendelSearch.jl
 
 This package supports Julia v1.0+
 
